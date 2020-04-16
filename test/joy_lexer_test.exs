@@ -1,5 +1,4 @@
 defmodule JoyLexerTest do
-  alias :joy_lexer, as: Lexer
   use ExUnit.Case
 
   test "empty programs are valid" do

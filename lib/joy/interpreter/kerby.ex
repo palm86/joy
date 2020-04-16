@@ -15,7 +15,6 @@ defmodule Joy.Interpreter.Kerby do
     [a, b | rest] = stack
 
     [b, a | rest]
-    |> IO.inspect(label: "swap")
   end
 
   @doc """
@@ -28,7 +27,6 @@ defmodule Joy.Interpreter.Kerby do
     [head | stack] = stack
 
     [head, head | stack]
-    |> IO.inspect(label: "dup")
   end
 
   @doc """
@@ -38,7 +36,6 @@ defmodule Joy.Interpreter.Kerby do
     [_ | stack] = stack
 
     stack
-    |> IO.inspect(label: "zap")
   end
 
   @doc """
@@ -50,7 +47,6 @@ defmodule Joy.Interpreter.Kerby do
     [a | rest] = stack
 
     [[a] | rest]
-    |> IO.inspect(label: "unit")
   end
 
   @doc """
@@ -64,7 +60,6 @@ defmodule Joy.Interpreter.Kerby do
     case {a, b} do
       {a, b} when is_list(a) and is_list(b) -> [b ++ a | rest]
     end
-    |> IO.inspect(label: "cat")
   end
 
   @doc """
@@ -78,7 +73,6 @@ defmodule Joy.Interpreter.Kerby do
     case {a, b} do
       {a, b} when is_list(a) -> [[b | a] | rest]
     end
-    |> IO.inspect(label: "cons")
   end
 
   @doc """
@@ -88,7 +82,6 @@ defmodule Joy.Interpreter.Kerby do
   """
   def i([a | rest] = _stack) when is_list(a) do
     __execute(rest, a)
-    |> IO.inspect(label: "i")
   end
 
   @doc """
@@ -98,8 +91,7 @@ defmodule Joy.Interpreter.Kerby do
   """
   def dip([a, b | rest] = _stack) when is_list(a) and is_list(b) do
     [b | __execute(rest, a)]
-    |> IO.inspect(label: "dip")
   end
 
-  def id(stack), do: stack |> IO.inspect(label: "id")
+  def id(stack), do: stack
 end
