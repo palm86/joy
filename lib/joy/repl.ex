@@ -6,6 +6,7 @@ defmodule Joy.REPL do
    _| |___|_  |
   |___|   |___|
 
+  Interactive Joy - press Ctrl+C to exit
   """
 
   def main(_args \\ []) do
@@ -19,19 +20,17 @@ defmodule Joy.REPL do
   defp loop() do
     input = IO.gets(IO.ANSI.magenta() <> "joy> " <> IO.ANSI.white())
 
-    unless input == "exit\n" do
-      with {:ok, parsed_input} <- Joy.Parser.parse(input),
-           {:ok, stack} <- Joy.REPL.Engine.push(parsed_input) do
-        stack
-        |> Joy.Formatter.format(direction: :stack)
-        |> IO.puts()
-      else
-        {:error, reason} ->
-          IO.puts(IO.ANSI.red() <> "Error: #{inspect(reason)}" <> IO.ANSI.white())
-      end
-
-      loop()
+    with {:ok, parsed_input} <- Joy.Parser.parse(input),
+         {:ok, stack} <- Joy.REPL.Engine.push(parsed_input) do
+      stack
+      |> Joy.Formatter.format(direction: :stack)
+      |> IO.puts()
+    else
+      {:error, reason} ->
+        IO.puts(IO.ANSI.red() <> "Error: #{inspect(reason)}" <> IO.ANSI.white())
     end
+
+    loop()
   end
 
   defmodule Engine do

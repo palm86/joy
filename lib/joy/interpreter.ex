@@ -42,7 +42,7 @@ defmodule Joy.Interpreter do
   end
 
   defp do_interpret(program, stack) when is_list(program) do
-    impl = Application.get_env(:joy, __MODULE__)[:interpreter] || Joy.Interpreter.Kerby
+    impl = Application.get_env(:joy, __MODULE__)[:implementation] || Joy.Interpreter.Kerby
     impl.__execute(stack, program)
   end
 end
