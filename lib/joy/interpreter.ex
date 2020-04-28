@@ -26,9 +26,23 @@ defmodule Joy.Interpreter do
     end
   end
 
-  @spec interpret(program) :: stack
-  def interpret(program) when is_list(program) do
+  @spec interpret!(program, stack) :: stack
+  def interpret!(program, stack \\ []) do
+    do_interpret(program, stack)
+  end
+
+  @spec interpret(program, stack) :: {:ok, stack} | {:error, any}
+  def interpret(program, stack \\ []) do
+    try do
+      {:ok, do_interpret(program, stack)}
+    rescue
+      e ->
+        {:error, inspect(e)}
+    end
+  end
+
+  defp do_interpret(program, stack) when is_list(program) do
     impl = Application.get_env(:joy, __MODULE__)[:interpreter] || Joy.Interpreter.Kerby
-    impl.__execute([], program)
+    impl.__execute(stack, program)
   end
 end

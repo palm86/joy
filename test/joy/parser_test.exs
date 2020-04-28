@@ -3,44 +3,44 @@ defmodule Joy.ParserTest do
   use ExUnit.Case
 
   test "parse" do
-    assert Parser.parse("") == []
-    assert Parser.parse(" ") == []
-    assert Parser.parse("   ") == []
-    assert Parser.parse("[]") == [[]]
-    assert Parser.parse(" []") == [[]]
-    assert Parser.parse("[] ") == [[]]
-    assert Parser.parse(" [] ") == [[]]
-    assert Parser.parse("[ ]") == [[]]
-    assert Parser.parse("[  ]") == [[]]
-    assert Parser.parse("[   ]") == [[]]
-    assert Parser.parse("a") == [:a]
-    assert Parser.parse(" a") == [:a]
-    assert Parser.parse("a ") == [:a]
-    assert Parser.parse(" a ") == [:a]
-    assert Parser.parse("[ a]") == [[:a]]
-    assert Parser.parse("[a ]") == [[:a]]
-    assert Parser.parse("[ a ]") == [[:a]]
-    assert Parser.parse(" [a]") == [[:a]]
-    assert Parser.parse("[a] ") == [[:a]]
-    assert Parser.parse(" [a] ") == [[:a]]
-    assert Parser.parse(" [ a ]") == [[:a]]
-    assert Parser.parse("[ a ] ") == [[:a]]
-    assert Parser.parse(" [ a ] ") == [[:a]]
-    assert Parser.parse("[ a a]") == [[:a, :a]]
-    assert Parser.parse("[a a ]") == [[:a, :a]]
-    assert Parser.parse("[ a a ]") == [[:a, :a]]
-    assert Parser.parse("[ a []]") == [[:a, []]]
-    assert Parser.parse("[a [] ]") == [[:a, []]]
-    assert Parser.parse("[ a [] ]") == [[:a, []]]
-    assert Parser.parse("[ a [a]]") == [[:a, [:a]]]
-    assert Parser.parse("[a [a] ]") == [[:a, [:a]]]
-    assert Parser.parse("[ a [a] ]") == [[:a, [:a]]]
-    assert Parser.parse("[ [] a]") == [[[], :a]]
-    assert Parser.parse("[[] a ]") == [[[], :a]]
-    assert Parser.parse("[ [] a ]") == [[[], :a]]
-    assert Parser.parse("[ [a] []]") == [[[:a], []]]
-    assert Parser.parse("[[a] [] ]") == [[[:a], []]]
-    assert Parser.parse("[ [a] [] ]") == [[[:a], []]]
+    assert Parser.parse!("") == []
+    assert Parser.parse!(" ") == []
+    assert Parser.parse!("   ") == []
+    assert Parser.parse!("[]") == [[]]
+    assert Parser.parse!(" []") == [[]]
+    assert Parser.parse!("[] ") == [[]]
+    assert Parser.parse!(" [] ") == [[]]
+    assert Parser.parse!("[ ]") == [[]]
+    assert Parser.parse!("[  ]") == [[]]
+    assert Parser.parse!("[   ]") == [[]]
+    assert Parser.parse!("a") == [:a]
+    assert Parser.parse!(" a") == [:a]
+    assert Parser.parse!("a ") == [:a]
+    assert Parser.parse!(" a ") == [:a]
+    assert Parser.parse!("[ a]") == [[:a]]
+    assert Parser.parse!("[a ]") == [[:a]]
+    assert Parser.parse!("[ a ]") == [[:a]]
+    assert Parser.parse!(" [a]") == [[:a]]
+    assert Parser.parse!("[a] ") == [[:a]]
+    assert Parser.parse!(" [a] ") == [[:a]]
+    assert Parser.parse!(" [ a ]") == [[:a]]
+    assert Parser.parse!("[ a ] ") == [[:a]]
+    assert Parser.parse!(" [ a ] ") == [[:a]]
+    assert Parser.parse!("[ a a]") == [[:a, :a]]
+    assert Parser.parse!("[a a ]") == [[:a, :a]]
+    assert Parser.parse!("[ a a ]") == [[:a, :a]]
+    assert Parser.parse!("[ a []]") == [[:a, []]]
+    assert Parser.parse!("[a [] ]") == [[:a, []]]
+    assert Parser.parse!("[ a [] ]") == [[:a, []]]
+    assert Parser.parse!("[ a [a]]") == [[:a, [:a]]]
+    assert Parser.parse!("[a [a] ]") == [[:a, [:a]]]
+    assert Parser.parse!("[ a [a] ]") == [[:a, [:a]]]
+    assert Parser.parse!("[ [] a]") == [[[], :a]]
+    assert Parser.parse!("[[] a ]") == [[[], :a]]
+    assert Parser.parse!("[ [] a ]") == [[[], :a]]
+    assert Parser.parse!("[ [a] []]") == [[[:a], []]]
+    assert Parser.parse!("[[a] [] ]") == [[[:a], []]]
+    assert Parser.parse!("[ [a] [] ]") == [[[:a], []]]
 
     multiline = """
     a
@@ -51,7 +51,7 @@ defmodule Joy.ParserTest do
 
     """
 
-    assert Parser.parse(multiline) == [:a, :a, [:a]]
+    assert Parser.parse!(multiline) == [:a, :a, [:a]]
 
     multiline = """
     [
@@ -60,7 +60,7 @@ defmodule Joy.ParserTest do
     ]
     """
 
-    assert Parser.parse(multiline) == [[:a, []]]
+    assert Parser.parse!(multiline) == [[:a, []]]
 
     multiline = """
     [
@@ -74,6 +74,6 @@ defmodule Joy.ParserTest do
             ]
     """
 
-    assert Parser.parse(multiline) == [[:a, [:a, [:a]]]]
+    assert Parser.parse!(multiline) == [[:a, [:a, [:a]]]]
   end
 end
