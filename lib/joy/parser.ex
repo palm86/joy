@@ -18,7 +18,7 @@ defmodule Joy.Parser do
     end
   end
 
-  @spec parse!(binary) :: program
+  @spec parse!(binary) :: program | no_return
   def parse!(str) when is_binary(str) do
     with {:ok, tokens, _} <- str |> to_charlist() |> :joy_lexer.string(),
          {:ok, joy} <- :joy_parser.parse(tokens) do
