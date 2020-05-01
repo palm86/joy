@@ -2,7 +2,7 @@
 
 Definitions.
 
-FUNCTION       = [a-z_0-9]+
+FUNCTION       = [a-z_0-9\-]+
 WHITESPACE     = [\s\t\n\r]+
 
 Rules.

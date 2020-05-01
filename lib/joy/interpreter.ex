@@ -13,15 +13,44 @@ defmodule Joy.Interpreter do
       def __execute(stack, program) when is_list(stack) and is_list(program) do
         Enum.reduce(program, stack, fn
           function, stack when is_atom(function) ->
-            if Kernel.function_exported?(__MODULE__, function, 1) do
-              Kernel.apply(__MODULE__, function, [stack])
-            else
-              [function | stack]
+            cond do
+              Kernel.function_exported?(__MODULE__, function, 1) ->
+                Kernel.apply(__MODULE__, function, [stack])
+
+              function in Map.keys(Process.get()[:custom_definitions] || %{}) ->
+                func = Process.get()[:custom_definitions][function]
+                func.(stack)
+
+              true ->
+                [function | stack]
             end
 
           quotation, stack when is_list(quotation) ->
             [quotation | stack]
         end)
+      end
+
+      def define(stack) do
+        [quotation, [name] | rest] = stack
+
+        func = fn fn_stack ->
+          fn_stack
+          |> __execute(quotation)
+        end
+
+        custom_definitions =
+          Process.get()[:custom_definitions] ||
+            %{}
+            |> Map.put(name, func)
+
+        Process.put(:custom_definitions, custom_definitions)
+
+        IO.puts(
+          IO.ANSI.yellow() <>
+            "#{name} == #{Joy.Formatter.format(quotation)}" <> IO.ANSI.white()
+        )
+
+        rest
       end
     end
   end
