@@ -49,7 +49,10 @@ defmodule Joy.REPL do
     end
 
     def handle_call({:push, input}, _from, state) do
-      {:reply, Joy.Interpreter.interpret(input, state), state}
+      case Joy.Interpreter.interpret(input, state) do
+        {:ok, new_state} -> {:reply, {:ok, new_state}, new_state}
+        {:error, reason} -> {:reply, {:error, reason}, state}
+      end
     end
   end
 end
