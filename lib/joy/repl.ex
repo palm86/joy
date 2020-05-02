@@ -6,7 +6,7 @@ defmodule Joy.REPL do
    _| |___|_  |
   |___|   |___|
 
-  Interactive Joy - press Ctrl+C to exit
+  Interactive Joy (#{String.trim(File.read!("VERSION"))}) - press Ctrl+C to exit
   """
 
   def main(_args \\ []) do
