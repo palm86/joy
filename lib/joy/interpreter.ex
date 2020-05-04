@@ -39,9 +39,8 @@ defmodule Joy.Interpreter do
         end
 
         custom_definitions =
-          Process.get()[:custom_definitions] ||
-            %{}
-            |> Map.put(name, func)
+          (Process.get()[:custom_definitions] || %{})
+          |> Map.put(name, func)
 
         Process.put(:custom_definitions, custom_definitions)
 
