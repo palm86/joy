@@ -1,4 +1,4 @@
--file("/usr/lib/erlang/lib/parsetools-2.1.8/include/leexinc.hrl", 0).
+-file("/usr/local/Cellar/erlang/22.3.4/lib/erlang/lib/parsetools-2.1.8/include/leexinc.hrl", 0).
 %% The source of this file is part of leex distribution, as such it
 %% has the same Copyright as the other files in the leex
 %% distribution. The Copyright is defined in the accompanying file
@@ -17,7 +17,7 @@
 to_atom(Chars) ->
   list_to_atom(Chars).
 
--file("/usr/lib/erlang/lib/parsetools-2.1.8/include/leexinc.hrl", 14).
+-file("/usr/local/Cellar/erlang/22.3.4/lib/erlang/lib/parsetools-2.1.8/include/leexinc.hrl", 14).
 
 format_error({illegal,S}) -> ["illegal characters ",io_lib:write_string(S)];
 format_error({user,S}) -> S.
@@ -395,4 +395,4 @@ yyaction_2(TokenLine) ->
 yyaction_3() ->
      skip_token .
 
--file("/usr/lib/erlang/lib/parsetools-2.1.8/include/leexinc.hrl", 313).
+-file("/usr/local/Cellar/erlang/22.3.4/lib/erlang/lib/parsetools-2.1.8/include/leexinc.hrl", 313).

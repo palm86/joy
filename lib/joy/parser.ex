@@ -4,31 +4,40 @@ defmodule Joy.Parser do
   @type func :: atom
   @type quot :: [program]
 
-  @spec parse(binary) :: {:ok, program} | {:error, any}
-  def parse(str) when is_binary(str) do
-    with {:ok, tokens, _} <- str |> to_charlist() |> :joy_lexer.string(),
-         {:ok, joy} <- :joy_parser.parse(tokens) do
-      {:ok, joy}
-    else
-      {:error, {_, :joy_lexer, {_, _}}, _} ->
-        {:error, "invalid token"}
-
-      {:error, _} ->
-        {:error, "parser error"}
-    end
+  @spec parse(binary, keyword) :: {:ok, program} | {:error, any}
+  def parse(str, opts \\ []) when is_binary(str) do
+    do_parse(str, Keyword.put(opts, :bang, false))
   end
 
-  @spec parse!(binary) :: program | no_return
-  def parse!(str) when is_binary(str) do
+  @spec parse!(binary, keyword) :: program | no_return
+  def parse!(str, opts \\ []) when is_binary(str) do
+    do_parse(str, Keyword.put(opts, :bang, true))
+  end
+
+  defp do_parse(str, opts) when is_binary(str) do
+    bang = Keyword.get(opts, :bang, false)
+
     with {:ok, tokens, _} <- str |> to_charlist() |> :joy_lexer.string(),
          {:ok, joy} <- :joy_parser.parse(tokens) do
-      joy
+      if bang do
+        joy
+      else
+        {:ok, joy}
+      end
     else
       {:error, {_, :joy_lexer, {_, _}}, _} ->
-        raise "invalid token"
+        if bang do
+          raise "invalid token"
+        else
+          {:error, "invalid token"}
+        end
 
       {:error, _} ->
-        raise "parser error"
+        if bang do
+          raise "parser error"
+        else
+          {:error, "parser error"}
+        end
     end
   end
 end

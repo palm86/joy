@@ -1,7 +1,6 @@
 defmodule Joy.FormatterTest do
   import Joy, only: [sigil_J: 2]
   alias Joy.Formatter
-  alias Joy.Parser
   use ExUnit.Case
 
   test "format program" do

@@ -23,3 +23,6 @@ erl_crash.dump
 joy-*.tar
 
 .elixir_ls/
+
+src/joy_lexer.erl
+src/joy_parser.erl
