@@ -30,6 +30,11 @@ defmodule Joy.Interpreter do
         end)
       end
 
+      @doc """
+      `[name] [body] define == `
+
+      Defines a function `name` that executes `[body] such that `name == body`.
+      """
       def define(stack) do
         [quotation, [name] | rest] = stack
 
@@ -50,6 +55,44 @@ defmodule Joy.Interpreter do
         )
 
         rest
+      end
+
+      @doc """
+      `help == ` or `[name] help == `
+
+      Prints a general or function-specific help message.
+      """
+      def help(stack) do
+        {:docs_v1, _annotation, :elixir, _format, _module_doc, _metadata, docs} = Code.fetch_docs(__MODULE__)
+
+        case stack do
+          [[name] | stack] ->
+            docs
+            |> Enum.each(fn
+              {{:function, ^name, 1}, _, _, %{"en" => doc_content}, _metadata} ->
+                unless String.starts_with?(to_string(name), "_") do
+                  IO.puts(IO.ANSI.yellow() <> "\n" <> doc_content <> IO.ANSI.white() <> "\n")
+                end
+              _ -> :ok
+            end)
+
+            stack
+          stack ->
+            IO.puts(IO.ANSI.yellow() <> "\nUsing backend #{inspect(__MODULE__)} which defines the following functions:\n")
+
+            docs
+            |> Enum.each(fn
+              {{:function, name, 1}, _, _, %{"en" => doc_content}, _metadata} ->
+                unless String.starts_with?(to_string(name), "_") do
+                  IO.puts("  * " <> to_string(name))
+                end
+              _ -> :ok
+            end)
+
+            IO.puts("\nUse `[name] help` to learn more about a specific function" <> IO.ANSI.yellow())
+
+            stack
+        end
       end
     end
   end
