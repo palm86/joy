@@ -7,9 +7,12 @@ defmodule Joy.Interpreter.Kerby do
   require Logger
 
   @doc """
-  [B] [A] swap == [A] [B]
+  `[B] [A] swap == [A] [B]`
 
-  Alt: swap == unit dip
+  Swaps the two elements at the top of the stack.
+
+  Composite definition:
+  `swap == unit dip`
   """
   def swap(stack) do
     [a, b | rest] = stack
@@ -18,9 +21,9 @@ defmodule Joy.Interpreter.Kerby do
   end
 
   @doc """
-  [A] dup  == [A] [A]
+  `[A] dup == [A] [A]`
 
-  Alt: swap == unit dip
+  Duplicates the element at the top of the stack.
   """
   def dup(stack) do
     # Extract
@@ -30,7 +33,9 @@ defmodule Joy.Interpreter.Kerby do
   end
 
   @doc """
-  [A] zap  ==
+  `[A] zap == `
+
+  Pops the element at the top of the stack.
   """
   def zap(stack) do
     [_ | stack] = stack
@@ -39,9 +44,12 @@ defmodule Joy.Interpreter.Kerby do
   end
 
   @doc """
-  # [A] unit == [[A]]
+  `[A] unit == [[A]]`
 
-  Alt: unit == [] cons
+  Quotes the element at the top of the stack.
+
+  Composite defintion:
+  `unit == [] cons`
   """
   def unit(stack) do
     [a | rest] = stack
@@ -50,9 +58,12 @@ defmodule Joy.Interpreter.Kerby do
   end
 
   @doc """
-   [B] [A] cat == [B A]
+  `[B] [A] cat == [B A]`
 
-   Alt (requires transparent quotation): cat  == [[i] dip i] cons cons
+  Concatenates the two lists at the top of the stack.
+
+  Composite definition (require transparent quotation):
+  `cat  == [[i] dip i] cons cons`
   """
   def cat(stack) do
     [a, b | rest] = stack
@@ -63,9 +74,12 @@ defmodule Joy.Interpreter.Kerby do
   end
 
   @doc """
-  [B] [A] cons == [[B] A]
+  `[B] [A] cons == [[B] A]`
 
-  Alt: cons == [unit] dip cat
+  Inserts the element below the top of the stack as the head of the list on top of the stack.
+
+  Composite definition:
+  `cons == [unit] dip cat`
   """
   def cons(stack) do
     [a, b | rest] = stack
@@ -76,22 +90,36 @@ defmodule Joy.Interpreter.Kerby do
   end
 
   @doc """
-  [A] i == A
+  `[A] i == A`
 
-  Alt: i == dup dip zap
+  Interprets/unquotes the quotation/list at the top of the stack.
+
+  Composite definition:
+  `i == dup dip zap`
   """
   def i([a | rest] = _stack) when is_list(a) do
     __execute(rest, a)
   end
 
   @doc """
-  [B] [A] dip == A [B]
+  `[B] [A] dip == A [B]`
 
-  Also, dip == swap unit cat i
+  Pops two elements off the stack, then executes the first and pushes the second.
+
+  Composite definition:
+  `dip == swap unit cat i`
   """
   def dip([a, b | rest] = _stack) when is_list(a) and is_list(b) do
     [b | __execute(rest, a)]
   end
 
+  @doc """
+  `[A] id == [A]`
+
+  The identify function. Does nothing.
+
+  Composite definition (one of many):
+  `id == swap swap`
+  """
   def id(stack), do: stack
 end
