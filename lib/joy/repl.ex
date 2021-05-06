@@ -18,28 +18,64 @@ defmodule Joy.REPL do
   end
 
   defp loop(stack) do
-    # read
+    stack
+    |> read()
+    |> evaluate()
+    |> print()
+    |> loop()
+  end
+
+  # defp loop(stack) do
+  #   # read
+  #   input = IO.gets(IO.ANSI.magenta() <> "joy> " <> IO.ANSI.white())
+
+  #   # evaluate
+  #   stack =
+  #     with {:ok, parsed_input} <- Joy.Parser.parse(input),
+  #          {:ok, stack} <- Joy.Interpreter.interpret(parsed_input, stack) do
+  #       # print
+  #       stack
+  #       |> Joy.Formatter.format(direction: :stack)
+  #       |> IO.puts()
+
+  #       stack
+  #     else
+  #       {:error, reason} ->
+  #         # print
+  #         IO.puts(IO.ANSI.red() <> "Error: #{inspect(reason)}" <> IO.ANSI.white())
+
+  #         stack
+  #     end
+
+  #   # loop
+  #   loop(stack)
+  # end
+
+  defp read(stack) do
     input = IO.gets(IO.ANSI.magenta() <> "joy> " <> IO.ANSI.white())
+    {input, stack}
+  end
 
-    # evaluate
-    stack =
-      with {:ok, parsed_input} <- Joy.Parser.parse(input),
-           {:ok, stack} <- Joy.Interpreter.interpret(parsed_input, stack) do
-        # print
-        stack
-        |> Joy.Formatter.format(direction: :stack)
-        |> IO.puts()
+  defp evaluate({input, stack}) do
+    with {:ok, parsed_input} <- Joy.Parser.parse(input),
+      {:ok, stack} <- Joy.Interpreter.interpret(parsed_input, stack) do
+        {:ok, stack}
+    else
+      {:error, reason} -> {:error, reason, stack}
+    end
+  end
 
-        stack
-      else
-        {:error, reason} ->
-          # print
-          IO.puts(IO.ANSI.red() <> "Error: #{inspect(reason)}" <> IO.ANSI.white())
+  defp print({:ok, stack}) do
+    stack
+    |> Joy.Formatter.format(direction: :stack)
+    |> IO.puts()
 
-          stack
-      end
+    stack
+  end
 
-    # loop
-    loop(stack)
+  defp print({:error, reason, stack}) do
+      IO.puts(IO.ANSI.red() <> "Error: #{inspect(reason)}" <> IO.ANSI.white())
+
+      stack
   end
 end

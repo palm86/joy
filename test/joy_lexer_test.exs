@@ -32,8 +32,27 @@ defmodule JoyLexerTest do
   test "newlines" do
     str = """
     [
-    a
-    []
+      a
+      []
+    ]
+    """
+
+    assert {:ok, tokens, _} = str |> to_charlist() |> :joy_lexer.string()
+
+    assert tokens == [
+             {:"[", 1},
+             {:function, 2, :a},
+             {:"[", 3},
+             {:"]", 3},
+             {:"]", 4},
+           ]
+  end
+
+  test "comments" do
+    str = """
+    [
+      a # just a comment
+      []
     ]
     """
 

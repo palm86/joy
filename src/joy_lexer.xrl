@@ -4,6 +4,7 @@ Definitions.
 
 FUNCTION       = [a-z_0-9\-]+
 WHITESPACE     = [\s\t\n\r]+
+COMMENT        = #.*
 
 Rules.
 
@@ -11,6 +12,7 @@ Rules.
 \[                : {token, {'[',  TokenLine}}.
 \]                : {token, {']',  TokenLine}}.
 {WHITESPACE}      : skip_token.
+{COMMENT}      : skip_token.
 
 Erlang code.
 

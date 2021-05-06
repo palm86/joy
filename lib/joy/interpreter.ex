@@ -63,7 +63,8 @@ defmodule Joy.Interpreter do
       Prints a general or function-specific help message.
       """
       def help(stack) do
-        {:docs_v1, _annotation, :elixir, _format, _module_doc, _metadata, docs} = Code.fetch_docs(__MODULE__)
+        {:docs_v1, _annotation, :elixir, _format, _module_doc, _metadata, docs} =
+          Code.fetch_docs(__MODULE__)
 
         case stack do
           [[name] | stack] ->
@@ -73,12 +74,18 @@ defmodule Joy.Interpreter do
                 unless String.starts_with?(to_string(name), "_") do
                   IO.puts(IO.ANSI.yellow() <> "\n" <> doc_content <> IO.ANSI.white() <> "\n")
                 end
-              _ -> :ok
+
+              _ ->
+                :ok
             end)
 
             stack
+
           stack ->
-            IO.puts(IO.ANSI.yellow() <> "\nUsing backend #{inspect(__MODULE__)} which defines the following functions:\n")
+            IO.puts(
+              IO.ANSI.yellow() <>
+                "\nUsing backend #{inspect(__MODULE__)} which defines the following functions:\n"
+            )
 
             docs
             |> Enum.each(fn
@@ -86,10 +93,14 @@ defmodule Joy.Interpreter do
                 unless String.starts_with?(to_string(name), "_") do
                   IO.puts("  * " <> to_string(name))
                 end
-              _ -> :ok
+
+              _ ->
+                :ok
             end)
 
-            IO.puts("\nUse `[name] help` to learn more about a specific function" <> IO.ANSI.yellow())
+            IO.puts(
+              "\nUse `[name] help` to learn more about a specific function" <> IO.ANSI.yellow()
+            )
 
             stack
         end

@@ -3,8 +3,8 @@ defmodule Joy.Interpreter.Kerby do
   See: http://tunes.org/~iepos/joy.html
 
   """
-  use Joy.Interpreter
   require Logger
+  use Joy.Interpreter
 
   @doc """
   `[B] [A] swap == [A] [B]`
