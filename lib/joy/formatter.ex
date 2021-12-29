@@ -4,32 +4,24 @@ defmodule Joy.Formatter do
 
     formatted =
       case direction do
-        :program -> do_format(result, "")
-        :stack -> do_format(Enum.reverse(result), "")
+        :program -> do_format(result, true)
+        :stack -> do_format(Enum.reverse(result), true)
       end
 
-    String.slice(formatted, 1, String.length(formatted) - 2)
+    IO.iodata_to_binary(formatted)
   end
 
-  defp do_format(elem, acc) when is_list(elem) do
-    initial =
-      cond do
-        acc == "" -> "["
-        String.ends_with?(acc, "[") -> acc <> "["
-        true -> acc <> " " <> "["
-      end
-
-    formatted =
-      elem
-      |> Enum.reduce(initial, &do_format(&1, &2))
-
-    formatted <> "]"
+  defp do_format(elem, true = _first) when is_list(elem) do
+    elem
+    |> Enum.map(&do_format(&1, false))
+    |> Enum.intersperse(" ")
   end
 
-  defp do_format(elem, acc) when is_atom(elem) do
-    cond do
-      String.ends_with?(acc, "[") -> acc <> to_string(elem)
-      true -> acc <> " " <> to_string(elem)
-    end
+  defp do_format(elem, false = _first) when is_list(elem) do
+    ["[", do_format(elem, true), "]"]
+  end
+
+  defp do_format(elem, _first) when is_atom(elem) do
+    Atom.to_string(elem)
   end
 end

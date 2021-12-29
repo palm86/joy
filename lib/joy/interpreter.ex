@@ -10,24 +10,46 @@ defmodule Joy.Interpreter do
 
   defmacro __using__(_opts) do
     quote do
-      def __execute(stack, program) when is_list(stack) and is_list(program) do
-        Enum.reduce(program, stack, fn
-          function, stack when is_atom(function) ->
-            cond do
-              Kernel.function_exported?(__MODULE__, function, 1) ->
-                Kernel.apply(__MODULE__, function, [stack])
+      def __execute(stack, [] = _program) when is_list(stack) do
+        stack
+      end
 
-              function in Map.keys(Process.get()[:custom_definitions] || %{}) ->
-                func = Process.get()[:custom_definitions][function]
-                func.(stack)
+      def __execute(stack, [function_or_quotation | program])
+          when (is_list(stack) and is_list(function_or_quotation)) or
+                 is_atom(function_or_quotation) do
+        new_stack = __apply(function_or_quotation, stack)
 
-              true ->
-                [function | stack]
-            end
+        if Process.get()[:steps] || false and program != [] do
+          IO.puts([
+            IO.ANSI.faint(),
+            IO.ANSI.cyan(),
+            Joy.Formatter.format(new_stack, direction: :stack),
+            " ",
+            IO.ANSI.white(),
+            Joy.Formatter.format(program),
+            IO.ANSI.normal()
+          ])
+        end
 
-          quotation, stack when is_list(quotation) ->
-            [quotation | stack]
-        end)
+        __execute(new_stack, program)
+      end
+
+      defp __apply(function, stack) when is_atom(function) do
+        cond do
+          Kernel.function_exported?(__MODULE__, function, 1) ->
+            Kernel.apply(__MODULE__, function, [stack])
+
+          function in Map.keys(Process.get()[:custom_definitions] || %{}) ->
+            func = Process.get()[:custom_definitions][function]
+            func.(stack)
+
+          true ->
+            [function | stack]
+        end
+      end
+
+      defp __apply(quotation, stack) when is_list(quotation) do
+        [quotation | stack]
       end
 
       @doc """
@@ -55,6 +77,26 @@ defmodule Joy.Interpreter do
         )
 
         rest
+      end
+
+      @doc """
+      `steps == `
+
+      Toggles steps mode. If steps mode is active intermediary results are printed to the output.
+      """
+      def steps(stack) do
+        current_steps_mode = Process.get()[:steps] || false
+
+        Process.put(:steps, not current_steps_mode)
+
+        IO.puts([
+          IO.ANSI.yellow(),
+          "Steps mode: ",
+          to_string(not current_steps_mode),
+          IO.ANSI.white()
+        ])
+
+        stack
       end
 
       @doc """
