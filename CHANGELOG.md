@@ -1,5 +1,9 @@
 # Changelog
 
+## 0.3.0
+* Use iodata instead of string concatenation in formatter
+* Add steps mode for debugging
+
 ## 0.2.1
 * Fix tag
 
