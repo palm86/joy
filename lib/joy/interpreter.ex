@@ -27,7 +27,8 @@ defmodule Joy.Interpreter do
             " ",
             IO.ANSI.white(),
             Joy.Formatter.format(program),
-            IO.ANSI.normal()
+            IO.ANSI.normal(),
+            "\n"
           ])
         end
 
